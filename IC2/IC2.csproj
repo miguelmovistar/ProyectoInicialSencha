@@ -190,6 +190,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\EmpleadoController.cs" />
     <Compile Include="Controllers\FuncionesGeneralesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LineaNegocioController.cs" />
@@ -199,6 +200,24 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\Log.cs" />
+    <Compile Include="Images\Empleados.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Empleados.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Images\Empleados.cs">
+      <DependentUpon>Empleados.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Images\Empleados.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Empleados.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Images\Empleados1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Empleados.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Acceso.cs">
       <DependentUpon>ICPrueba.tt</DependentUpon>
     </Compile>
@@ -669,6 +688,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\js\IC\DataOrigen\RoamingCancelacionCosto\RoamingCancelacionCosto.js" />
+    <Content Include="Content\js\IC\Empleados.js" />
     <Content Include="Content\js\lib\loader.js" />
     <Content Include="Content\js\scripts\bootstrap.js" />
     <Content Include="Content\js\scripts\ext-all.js" />
@@ -3124,6 +3144,16 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\Empleados.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Empleados.edmx</DependentUpon>
+      <LastGenOutput>Empleados.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Images\Empleados.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Empleados.edmx</DependentUpon>
+      <LastGenOutput>Empleados1.cs</LastGenOutput>
+    </Content>
     <Content Include="Images\Telefonica.ico" />
     <Content Include="Models\ICPrueba.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -3571,6 +3601,13 @@
       <DependentUpon>ICPrueba.edmx</DependentUpon>
     </Content>
     <Content Include="Models\RestoreBD\20190921_IC.bak" />
+    <EntityDeploy Include="Images\Empleados.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Empleados.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Images\Empleados.edmx.diagram">
+      <DependentUpon>Empleados.edmx</DependentUpon>
+    </Content>
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -3626,6 +3663,7 @@
     <Content Include="Views\LineaNegocio\LineaNegocio.cshtml" />
     <Content Include="Views\LineaNegocio\Prueba.cshtml" />
     <Content Include="Views\Web.config" />
+    <Content Include="Views\Empleado\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
