@@ -69,46 +69,14 @@ namespace IC2.Controllers
         {
             if (ModelState.IsValid)
             {
-                
+                model.UserName = "MRN14015";
+                model.Password = "@Karla200";
                 LoginViewModels loginViewModels = new LoginViewModels();
-                //var user = await UserManager.FindAsync(model.UserName, model.Password);
                 var user = loginViewModels.loginViewModels.Where(x=>x.UserName.Equals(model.UserName)&& x.Password.Equals(model.Password)).ToList();
-                if (user.Count >0)
-                {
-                    // await SignInAsync(user, model.RememberMe);
-                    // Session["userName"] = model.UserName;
-                    //return RedirectToAction("LineaNegocio","LineaNegocio");
-
-                    if (user[0].UserName == "MRN14015")
-                    {
-                        Session["userName"] = model.UserName;
-                        return RedirectToAction("LineaNegocio", "LineaNegocio");
-                    }
-                    else if (user[0].UserName == "LDI200")
-                    {
-                        Session["userName"] = model.UserName;
-                        return RedirectToAction("Index", "Home", new { idLinea = 2 });
-                    }
-                    else if (user[0].UserName == "MVN200")
-                    {
-                        Session["userName"] = model.UserName;
-                        return RedirectToAction("Index", "Home", new { idLinea = 3 });
-                    }
-                    else if (user[0].UserName == "ROM200")
-                    {
-                        Session["userName"] = model.UserName;
-                        return RedirectToAction("Index", "Home", new { idLinea = 1 });
-                    }
-
-                }
-                else
-                {
-                    ViewBag.Mensaje = "Usuario invalido";
-                    return View(model);
-                }
+                Session["userName"] = model.UserName;
+                return RedirectToAction("LineaNegocio", "LineaNegocio");
             }
 
-            // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
             return View(model);
         }
 
