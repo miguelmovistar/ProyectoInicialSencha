@@ -1,9 +1,8 @@
-﻿using System;
+﻿using IC2.Images;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using IC2.Images;
 
 namespace IC2.Controllers
 {
@@ -11,13 +10,12 @@ namespace IC2.Controllers
     {
         EmpleadosEntities db = new EmpleadosEntities();
 
-        // GET: Empleado
         public ActionResult Index()
         {
             return View();
         }
 
-        public JsonResult LlenaGrid(int? lineaNegocio, DateTime Periodo, int start, int limit)
+        public JsonResult LlenaGrid(int? Id)
         {
             object respuesta = null;
             List<object> lista = new List<object>();
@@ -45,8 +43,7 @@ namespace IC2.Controllers
                 }
 
                 total = lista.Count();
-                lista = lista.Skip(start).Take(limit).ToList();
-                respuesta = new { results = lista, start = start, limit = limit, total = total, succes = true };
+                respuesta = new { results = lista, succes = true };
 
             }
             catch (Exception e)
@@ -59,3 +56,4 @@ namespace IC2.Controllers
 
     }
 }
+
