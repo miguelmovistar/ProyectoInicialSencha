@@ -54,6 +54,31 @@ namespace IC2.Controllers
             return Json(respuesta, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult AgregarAjustesObjecion(string nombre, string puesto)
+        {
+            object respuesta = null;
+            DateTime fecha_contable = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+
+            try
+            {
+                Empleados entidad = new Empleados();
+
+                entidad.IdEmpleado = 6;
+                entidad.Nombre = nombre;
+                entidad.Puesto = puesto;
+
+                db.Empleados.Add(entidad);
+                db.SaveChanges();
+                respuesta = new { success = true, results = "ok" };
+            }
+            catch (Exception ex)
+            {
+                respuesta = new { success = false, results = "Hubo un error al momento de realizar la petición." };
+            }
+
+            return Json(respuesta, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }
 
