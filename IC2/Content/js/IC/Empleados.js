@@ -94,7 +94,7 @@
                                             store.load();
                                         }
                                     },
-                                    {   // Columna Boton Buscar
+                                    {   // Columna Boton Agregar
                                         xtype: 'button',
                                         id: 'btnGuardar',
                                         border: false,
