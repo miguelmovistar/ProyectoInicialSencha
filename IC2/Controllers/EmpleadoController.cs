@@ -79,6 +79,37 @@ namespace IC2.Controllers
             return Json(respuesta, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult validaModif(int Id)
+        {
+            string strmsg = "";
+            bool blsccs = true;
+
+            object respuesta = null;
+
+            respuesta = new { success = blsccs, results = strmsg };
+
+            return Json(respuesta, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult modificarAcreedor(string Nombre, int Id)
+        {
+            object respuesta = null;
+
+            try
+            {
+                Empleados oAcreedor = db.Empleados.Where(a => a.IdEmpleado == Id).SingleOrDefault();
+                oAcreedor.Nombre = Nombre;
+                db.SaveChanges();
+
+                respuesta = new { success = true, results = oAcreedor };
+            }
+            catch (Exception ex)
+            {
+                respuesta = new { success = false, results = ex.Message };
+            }
+            return Json(respuesta, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }
 

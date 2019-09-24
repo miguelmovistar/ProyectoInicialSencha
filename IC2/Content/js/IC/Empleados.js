@@ -53,6 +53,27 @@
                                 columnLines: true,
                                 scrollable: true,
                                 border: false,
+                                selModel:
+                                {
+                                    selType: "checkboxmodel",
+                                    listeners: {
+                                        selectionchange: function (selected, eOpts) {
+                                            if (eOpts.length == 1) {
+                                                Ext.getCmp('btnEditar').setDisabled(false);
+                                                acreedor1 = eOpts[0].data.Acreedor;
+                                                nombre = eOpts[0].data.Nombre;
+                                                id = eOpts[0].data.IdEmpleado;
+
+                                                //Ext.Msg.alert('head', id);
+
+                                                var storeSAcreedor = Ext.StoreManager.lookup('Store');
+                                                storeSAcreedor.getProxy().extraParams.Id = id;
+                                            }
+                                            
+                                            habilitarDeshabilitar();
+                                        }
+                                    }
+                                },
                                 columns: [
                                     { // IdEmpleado
                                         xtype: "gridcolumn",
@@ -101,6 +122,17 @@
                                         html: "<button class='btn btn-primary' style='width:100%; font-size:13px;'>Nuevo</button>",
                                         handler: function () {
                                             Agregar();
+                                        }
+                                    },
+                                    {   // Columna Boton Editar
+                                        xtype: 'button',
+                                        id: 'btnEditar',
+                                        disabled: true,
+                                        html: "<button class='btn btn-primary' style='outline:none'>Editar</button>",
+                                        border: false,
+                                        margin: '0 0 0 -5',
+                                        handler: function () {
+                                            ValidaModificar();
                                         }
                                     },
                                     {   // Columna Boton Exportar
@@ -223,6 +255,201 @@
 
         win.show();
     }
+
+    function ValidaModificar() {
+        var store = Ext.StoreManager.lookup('StoreValida');
+        store.getProxy().extraParams.Id = id;
+        store.load();
+
+    }
+
+    var store_ValidaModifica = Ext.create('Ext.data.Store', {
+        model: 'Modelo',
+        storeId: 'StoreValida',
+        autoLoad: false,
+        proxy: {
+            type: 'ajax',
+            url: '../' + VIRTUAL_DIRECTORY + 'Empleado/validaModif',
+            reader: {
+                type: 'json',
+                root: 'results'
+            },
+            actionMethods: {
+                create: 'POST', read: 'GET', update: 'POST', destroy: 'POST'
+            },
+            afterRequest: function (request, success) {
+                var grp = Ext.getCmp('_grid');
+                var elements = grp.getSelectionModel().getSelection();
+
+                if (request.proxy.reader.jsonData.success == false) {
+                    var strMensaje = request.proxy.reader.jsonData.results;
+                    if (strMensaje != "") {
+                        Ext.Msg.confirm("Confirmación", strMensaje, function (btnVal) {
+                            if (btnVal === "yes") {
+                                ModificarAcreedor();
+                            }
+                        }, this);
+                    }
+                    else {
+                        ModificarAcreedor();
+                    }
+                }
+                else {
+                    ModificarAcreedor();
+                    //this.readCallback(request);
+                }
+            },
+            readCallback: function (request) {
+                if (request.proxy.reader.jsonData.results == "ok") {
+
+                    Ext.MessageBox.show({
+                        title: "tInformacionSistema",
+                        msg: "Se eliminó correctamente",
+                        buttons: Ext.MessageBox.OK,
+                        icon: Ext.MessageBox.INFO
+                    });
+
+                }
+                else if (request.proxy.reader.jsonData.results == "not") {
+                    Ext.MessageBox.show({
+                        title: "tInformacionSistema",
+                        msg: "Ocurrió un error",
+                        buttons: Ext.MessageBox.OK,
+                        icon: Ext.MessageBox.INFO
+                    });
+                }
+
+            }
+        }
+    });
+
+    var store_ModificarAcreedor = Ext.create('Ext.data.Store', {
+        model: 'Modelo',
+        storeId: 'StoreModifica',
+        autoLoad: false,
+        proxy: {
+            type: 'ajax',
+            url: '../' + VIRTUAL_DIRECTORY + 'Empleado/modificarAcreedor',
+            reader: {
+                type: 'json',
+                root: 'results'
+            },
+            actionMethods: {
+                create: 'POST', read: 'GET', update: 'POST', destroy: 'POST'
+            },
+            afterRequest: function (request, success) {
+                if (request.proxy.reader.jsonData.success) {
+                    Ext.MessageBox.show({
+                        title: "Confirmación",
+                        msg: "Se modificó exitosamente",
+                        buttons: Ext.MessageBox.OK,
+                        icon: Ext.MessageBox.INFO
+                    });
+                    Ext.getCmp('idWin').destroy();
+                    store_BuscarAcreedor.load();
+                } else {
+                    this.readCallback(request);
+                }
+            },
+            readCallback: function (request) {
+                Ext.MessageBox.show({
+                    title: "Aviso",
+                    msg: "Hubo un error",
+                    buttons: Ext.MessageBox.OK,
+                    icon: Ext.MessageBox.INFO
+                });
+            }
+        }
+    });
+
+    function ModificarAcreedor() {
+        var frm_agregar = Ext.widget('form', {
+            dockedItems: [
+                {
+                    xtype: 'panel',
+                    id: 'tbBarra',
+                    border: false,
+                    items: [
+                        {
+                            xtype: 'button',
+                            id: 'btn_Guardar',
+                            border: false,
+                            html: "<button class='btn btn-primary' style='outline:none; font-size: 11px' accesskey='g'>Guardar</button>",
+                            handler: function () {
+                                var store = Ext.StoreManager.lookup('StoreModifica');
+                                store.getProxy().extraParams.Nombre = Ext.getCmp('txtNombre').value;
+                                store.getProxy().extraParams.Id = id;
+                                store.load();
+                            }
+                        }
+                    ]
+                }
+            ],
+            items: [
+                {
+                    xtype: 'fieldset',
+                    margin: '0 0 0 0',
+                    id: 'fls_Acreedor',
+                    items: [
+                        {
+                            xtype: 'displayfield',
+                            fieldLabel: 'Acreedor',
+                            anchor: '100%',
+                            margin: '5 5 5 5',
+                            value: id
+                        },
+                        {
+                            xtype: 'textfield',
+                            name: 'txtNombre',
+                            id: 'txtNombre',
+                            fieldLabel: "Nombre",
+                            anchor: '100%',
+                            margin: '5 5 5 5',
+                            value: nombre,
+                            maxLength: 50,
+                            enforceMaxLength: true,
+                            msgTarget: 'under',
+                            allowBlank: false,
+                            blankText: "El campo Nombre es requerido"
+                        }
+                    ]
+                }
+            ]
+        });
+
+        win = Ext.widget('window', {
+            id: 'idWin',
+            title: "Editar",
+            closeAction: 'destroy',
+            layout: 'fit',
+            width: '30%',
+            resizable: false,
+            modal: true,
+            items: frm_agregar
+        });
+
+        win.show();
+    }
+
+    function habilitarDeshabilitar() {
+        var grp = Ext.getCmp('_grid');
+        var rec = grp.getSelectionModel().getSelection();
+
+        if (rec.length == 0) {
+            Ext.getCmp('btnEditar').setDisabled(true);
+            //Ext.getCmp('btnEliminar').setDisabled(true);
+            Ext.getCmp('btnGuardar').setDisabled(false);
+        } else if (rec.length == 1) {
+            Ext.getCmp('btnEditar').setDisabled(false);
+            //Ext.getCmp('btnEliminar').setDisabled(false);
+            Ext.getCmp('btnGuardar').setDisabled(true);
+        } else {
+            Ext.getCmp('btnEditar').setDisabled(true);
+            //Ext.getCmp('btnEliminar').setDisabled(false);
+            Ext.getCmp('btnGuardar').setDisabled(true);
+        }
+    }
+
 
 })
 
