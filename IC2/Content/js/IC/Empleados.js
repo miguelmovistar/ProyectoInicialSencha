@@ -1,5 +1,6 @@
 ﻿Ext.onReady(function () {
     Ext.QuickTips.init();
+    
 
     var IdEmpleado, Nombre, Puesto;
 
@@ -135,6 +136,31 @@
                                             ValidaModificar();
                                         }
                                     },
+                                    {   // Columna Boton Borrar
+                                        xtype: 'button',
+                                        id: 'btnEliminar',
+                                        margin: '0 0 0 -5',
+                                        html: "<button class='btn btn-primary' style='outline:none'>Eliminar</button>",
+                                        border: false,
+                                        disabled: true,
+                                        handler: function () {
+                                            var strID = "";
+                                            var grp = Ext.getCmp('_grid');
+                                            var rec = grp.getSelectionModel().getSelection();
+                                            for (var i = 0; i < rec.length; i++) {
+                                                strID = strID + rec[i].data.IdEmpleado + ",";
+                                            }
+                                            Ext.MessageBox.confirm('Confirmación', "¿Desea eliminar " + rec.length + " registro(s)? ", function (btn, text) {
+                                                if (btn == 'yes') {
+                                                    var store = Ext.StoreManager.lookup('StoreBorrar');
+                                                    store.getProxy().extraParams.strID = strID;
+                                                    store.load();
+
+                                                }
+                                            });
+                                            //store_BuscarAcreedor.load();
+                                        }
+                                    },
                                     {   // Columna Boton Exportar
                                         xtype: 'button',
                                         html: "<button class='btn btn-primary' style='width:100%; font-size:13px;'>Exportar</button>",
@@ -186,6 +212,7 @@
                                                 buttons: Ext.Msg.OK,
                                                 icon: Ext.MessageBox.INFO
                                             });
+                                            _storebuscar.load(); // Activa el boton de buscar
                                             win.destroy();
                                             store = Ext.StoreManager.lookup('Store');
                                         },
@@ -252,7 +279,7 @@
             modal: true,
             items: frm_agregar
         });
-
+        
         win.show();
     }
 
@@ -262,6 +289,70 @@
         store.load();
 
     }
+
+    var store_BorrarAcreedor = Ext.create('Ext.data.Store', {
+        model: 'Model',
+        storeId: 'StoreBorrar',
+        autoLoad: false,
+        proxy: {
+            type: 'ajax',
+            url: '../' + VIRTUAL_DIRECTORY + 'Empleado/borrarAcreedor',
+            reader: {
+                type: 'json',
+                root: 'results'
+            },
+            actionMethods: {
+                create: 'POST', read: 'GET', update: 'POST', destroy: 'POST'
+            },
+            afterRequest: function (request, success) {
+                var grp = Ext.getCmp('_grid');
+                var elements = grp.getSelectionModel().getSelection();
+
+                if (request.proxy.reader.jsonData.success == true) {
+                    Ext.MessageBox.show({
+                        title: "Confirmación",
+                        msg: "Se eliminaron " + elements.length + " registro(s) exitosamente",
+                        buttons: Ext.MessageBox.OK,
+                        icon: Ext.MessageBox.INFO
+                    });
+                    _storebuscar.load();
+                }
+                else {
+                    this.readCallback(request);
+                }
+            },
+            readCallback: function (request) {
+                if (!request.proxy.reader.jsonData.result.length != 4) {
+                    Ext.MessageBox.show({
+                        title: "Notificación",
+                        msg: request.proxy.reader.jsonData.result,
+                        buttons: Ext.MessageBox.OK,
+                        icon: Ext.MessageBox.INFO8
+                    });
+                    // store_BuscarEmpresa.load();
+                    //var grid = Ext.getCmp('grp_Empresa');
+                }
+                else if (request.proxy.reader.jsonData.results == "ok") {
+
+                    Ext.MessageBox.show({
+                        title: "tInformacionSistema",
+                        msg: "Se eliminó correctamente",
+                        buttons: Ext.MessageBox.OK,
+                        icon: Ext.MessageBox.INFO
+                    });
+
+                }
+                else if (request.proxy.reader.jsonData.results == "not") {
+                    Ext.MessageBox.show({
+                        title: "tInformacionSistema",
+                        msg: "Ocurrió un error",
+                        buttons: Ext.MessageBox.OK,
+                        icon: Ext.MessageBox.INFO
+                    });
+                }
+            }
+        }
+    });
 
     var store_ValidaModifica = Ext.create('Ext.data.Store', {
         model: 'Modelo',
@@ -345,6 +436,7 @@
                         buttons: Ext.MessageBox.OK,
                         icon: Ext.MessageBox.INFO
                     });
+                    _storebuscar.load(); // Activa el boton de buscar
                     Ext.getCmp('idWin').destroy();
                     store_BuscarAcreedor.load();
                 } else {
@@ -437,19 +529,23 @@
 
         if (rec.length == 0) {
             Ext.getCmp('btnEditar').setDisabled(true);
-            //Ext.getCmp('btnEliminar').setDisabled(true);
+            Ext.getCmp('btnEliminar').setDisabled(true);
             Ext.getCmp('btnGuardar').setDisabled(false);
         } else if (rec.length == 1) {
             Ext.getCmp('btnEditar').setDisabled(false);
-            //Ext.getCmp('btnEliminar').setDisabled(false);
+            Ext.getCmp('btnEliminar').setDisabled(false);
             Ext.getCmp('btnGuardar').setDisabled(true);
         } else {
             Ext.getCmp('btnEditar').setDisabled(true);
-            //Ext.getCmp('btnEliminar').setDisabled(false);
+            Ext.getCmp('btnEliminar').setDisabled(false);
             Ext.getCmp('btnGuardar').setDisabled(true);
         }
     }
 
+    Ext.EventManager.onDocumentReady(function (w, h) {
+        _storebuscar.load(); // Activa el boton de buscar
+        panel.doComponentLayout();
+    });
 
 })
 

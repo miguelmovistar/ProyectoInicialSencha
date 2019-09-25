@@ -110,6 +110,40 @@ namespace IC2.Controllers
             return Json(respuesta, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult borrarAcreedor(string strID)
+        {
+            object respuesta = null;
+            int Id = 0;
+            string strmsg = "ok";
+            string strSalto = "</br>";
+            bool blsucc = true;
+            strID = strID.TrimEnd(',');
+
+            try
+            {
+                string[] Ids = strID.Split(',');
+                for (int i = 0; i < Ids.Length; i++)
+                {
+                    if (Ids[i].Length != 0)
+                    {
+                        Id = int.Parse(Ids[i]);
+
+                        Empleados query = db.Empleados.Where(a => a.IdEmpleado == Id).SingleOrDefault();
+
+                        db.Empleados.Remove(query);
+                        db.SaveChanges();
+                    }
+                }
+                respuesta = new { success = blsucc, result = strmsg };
+            }
+            catch (Exception ex)
+            {
+                strmsg = ex.Message;
+                respuesta = new { success = false, result = strmsg };
+            }
+            return Json(respuesta, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }
 
