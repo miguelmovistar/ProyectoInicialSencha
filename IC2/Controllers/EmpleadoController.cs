@@ -56,8 +56,7 @@ namespace IC2.Controllers
 
         public JsonResult AgregarAjustesObjecion(string nombre, string puesto)
         {
-            object respuesta = null;
-            DateTime fecha_contable = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            object respuesta;
 
             try
             {
@@ -115,7 +114,6 @@ namespace IC2.Controllers
             object respuesta = null;
             int Id = 0;
             string strmsg = "ok";
-            string strSalto = "</br>";
             bool blsucc = true;
             strID = strID.TrimEnd(',');
 
