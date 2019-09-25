@@ -54,7 +54,7 @@ namespace IC2.Controllers
             return Json(respuesta, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult AgregarAjustesObjecion(string nombre, string puesto)
+        public JsonResult AgregarRegistro(string nombre, string puesto)
         {
             object respuesta;
 
@@ -90,7 +90,7 @@ namespace IC2.Controllers
             return Json(respuesta, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult modificarAcreedor(string Nombre, int Id)
+        public JsonResult ActualizarRegistro(string Nombre, int Id)
         {
             object respuesta = null;
 
@@ -109,7 +109,7 @@ namespace IC2.Controllers
             return Json(respuesta, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult borrarAcreedor(string strID)
+        public JsonResult BorrarRegistro(string strID)
         {
             object respuesta = null;
             int Id = 0;

@@ -198,7 +198,7 @@
                                 var form = this.up('form').getForm();
                                 if (form.wasValid) {
                                     form.submit({
-                                        url: '../' + VIRTUAL_DIRECTORY + 'Empleado/AgregarAjustesObjecion',
+                                        url: '../' + VIRTUAL_DIRECTORY + 'Empleado/AgregarRegistro',
                                         waitMsg: "Nuevo",
                                         params:
                                         {
@@ -285,6 +285,9 @@
 
     function ValidaModificar() {
         var store = Ext.StoreManager.lookup('StoreValida');
+
+        Ext.Msg.alert('ValidaModificar', store);
+
         store.getProxy().extraParams.Id = id;
         store.load();
 
@@ -296,7 +299,7 @@
         autoLoad: false,
         proxy: {
             type: 'ajax',
-            url: '../' + VIRTUAL_DIRECTORY + 'Empleado/borrarAcreedor',
+            url: '../' + VIRTUAL_DIRECTORY + 'Empleado/BorrarRegistro',
             reader: {
                 type: 'json',
                 root: 'results'
@@ -420,7 +423,7 @@
         autoLoad: false,
         proxy: {
             type: 'ajax',
-            url: '../' + VIRTUAL_DIRECTORY + 'Empleado/modificarAcreedor',
+            url: '../' + VIRTUAL_DIRECTORY + 'Empleado/ActualizarRegistro',
             reader: {
                 type: 'json',
                 root: 'results'
